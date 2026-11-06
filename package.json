@@ -1,6 +1,6 @@
 {
   "name": "@kylealimdev/app-sentinel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Private-friendly error reporting, PostgreSQL event storage, and email alerts for Node.js applications.",
   "license": "MIT",
   "type": "module",
@@ -12,12 +12,16 @@
       "import": "./dist/index.js"
     }
   },
+  "bin": {
+    "app-sentinel": "./dist/cli.js"
+  },
   "files": ["dist", "migrations", "scripts", "README.md", "LICENSE"],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts src/cli.ts --format esm --dts --clean",
     "check": "tsc --noEmit",
     "migrate": "node --env-file=.env scripts/migrate.mjs",
     "test:local": "node --env-file=.env scripts/test-local.mjs",
+    "relay": "node --env-file=.env dist/cli.js relay",
     "test": "vitest run",
     "dev": "tsup src/index.ts --format esm --dts --watch"
   },

@@ -9,6 +9,7 @@ const client = new Client({ connectionString: process.env.APP_SENTINEL_DATABASE_
 await client.connect();
 try {
   await client.query(await readFile(new URL("../migrations/001_initial_schema.sql", import.meta.url), "utf8"));
+  await client.query(await readFile(new URL("../migrations/002_relay_apps.sql", import.meta.url), "utf8"));
   console.log("App Sentinel migration completed.");
 } finally {
   await client.end();

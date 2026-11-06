@@ -2,7 +2,7 @@
 
 Server-side TypeScript error reporting with PostgreSQL event storage, email alerts, structured logs, and simple traces. It is designed for the maintainer's internal Node.js and Next.js projects.
 
-## What version 0.1.0 includes
+## What version 0.2.0 includes
 
 - Error normalization, stack traces, SHA-256 fingerprints, and PostgreSQL storage.
 - Recursive sensitive-data redaction.
@@ -10,6 +10,8 @@ Server-side TypeScript error reporting with PostgreSQL event storage, email aler
 - Rich React Email alerts delivered by Nodemailer.
 - JSON logs and simple async-operation duration traces.
 - Docker Compose setup for local PostgreSQL and Mailpit.
+- A self-hosted relay that centralizes PostgreSQL and SMTP credentials.
+- A client initializer that registers an app and writes its relay configuration.
 
 ## Important sender rule
 
@@ -45,7 +47,70 @@ npm run dev
 
 Visit `http://localhost:3000/api/test-sentinel` while PostgreSQL and Mailpit are running. The sample installs `@kylealimdev/app-sentinel` from npm.
 
-## Configure an app
+## Version 0.2 Relay setup
+
+The relay runs once on your local machine or VPS. It owns the shared monitoring database, Gmail/SMTP credentials, and recipient registrations. Consuming apps do not receive database or SMTP credentials.
+
+```bash
+copy .env.example .env
+npm run migrate
+npm run build
+npm run relay
+```
+
+For production, put these only on the relay host:
+
+```env
+APP_SENTINEL_RELAY_DATABASE_URL=postgresql://app_sentinel:strong-password@127.0.0.1:5432/app_sentinel
+APP_SENTINEL_RELAY_ADMIN_TOKEN=a-long-random-secret
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-dedicated-sender@example.com
+SMTP_PASSWORD=your-dedicated-email-app-password
+PORT=4318
+```
+
+Never expose the relay admin token, database URL, or SMTP password to a consuming application.
+
+### Register a consuming app
+
+Run this from the consuming app's directory after the relay is reachable:
+
+```bash
+$env:APP_SENTINEL_RELAY_ADMIN_TOKEN="YOUR_RELAY_ADMIN_TOKEN"
+pnpm exec app-sentinel init --relay-url https://your-relay.example.com --app-name community-store
+$env:APP_SENTINEL_RELAY_ADMIN_TOKEN=$null
+```
+
+The command asks only for the email address that should receive the app's alerts. It registers the app with the relay, generates a unique app key, and writes these machine values to the consuming app's `.env.local`:
+
+```env
+APP_SENTINEL_RELAY_URL=https://your-relay.example.com
+APP_SENTINEL_APP_KEY=generated-private-key
+```
+
+Do not commit the generated app key. The relay stores the recipient email, so application code never needs database or SMTP configuration.
+
+### Use the relay in a Next.js app
+
+```ts
+import { createRelayMonitorFromEnv } from "@kylealimdev/app-sentinel";
+
+export const monitor = createRelayMonitorFromEnv("community-store");
+```
+
+Use `monitor` in server-side Route Handlers, Server Actions, or backend services:
+
+```ts
+try {
+  await createOrder();
+} catch (error) {
+  await monitor.reportError(error, { route: "/api/checkout", orderId, userId });
+  throw error;
+}
+```
+
+## Direct database mode (version 0.1 compatibility)
 
 ```ts
 import { createMonitor, nodemailerNotifier } from "@kylealimdev/app-sentinel";

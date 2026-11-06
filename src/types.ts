@@ -64,3 +64,12 @@ export type ReportResult = {
   notified: boolean;
   notificationError?: Error;
 };
+
+export type RelayMonitorOptions = {
+  appName: string;
+  endpoint: string;
+  apiKey: string;
+  environment?: string;
+  release?: string;
+  redactKeys?: string[];
+};
