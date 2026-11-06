@@ -33,6 +33,18 @@ Open [Mailpit](http://localhost:8025) to inspect development emails. PostgreSQL 
 
 `npm run test:local` sends one intentional error, stores it in PostgreSQL, and delivers it to Mailpit. Run it again within 30 minutes to confirm alert cooldown: the event is stored, but a second email is not sent.
 
+## Next.js example
+
+The example is a self-contained Next.js project, so it has its own dependencies and TypeScript configuration. From `examples/nextjs-app`:
+
+```bash
+copy .env.local.example .env.local
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000/api/test-sentinel` while PostgreSQL and Mailpit are running. The sample installs `@kylealimdev/app-sentinel` from npm.
+
 ## Configure an app
 
 ```ts
