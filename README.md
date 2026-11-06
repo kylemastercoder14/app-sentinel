@@ -13,7 +13,7 @@ Server-side TypeScript error reporting with PostgreSQL event storage, email aler
 
 ## Important sender rule
 
-The sender is fixed in `src/notifiers/nodemailer.ts` as `APP_SENTINEL_FROM` (`developer.kyleandrelim@gmail.com`). Do not add a per-app `from` option.
+The sender is fixed in `src/notifiers/nodemailer.ts` as `APP_SENTINEL_FROM`. Do not add a per-app `from` option.
 
 The dedicated sender account's SMTP username and app password are secrets supplied by the deployed app. Each app only chooses its recipient using `APP_SENTINEL_ALERT_TO`.
 
@@ -66,7 +66,7 @@ try {
 APP_SENTINEL_DATABASE_URL=postgresql://app_sentinel:strong-password@127.0.0.1:5432/app_sentinel
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=developer.kyleandrelim@gmail.com
+SMTP_USER=your-dedicated-sender@example.com
 SMTP_PASSWORD=your-dedicated-email-app-password
 APP_SENTINEL_ALERT_TO=owner@example.com
 ```
