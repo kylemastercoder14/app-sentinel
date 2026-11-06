@@ -1,0 +1,42 @@
+{
+  "name": "@kylealimdev/app-sentinel",
+  "version": "0.1.0",
+  "description": "Private-friendly error reporting, PostgreSQL event storage, and email alerts for Node.js applications.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "migrations", "scripts", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "check": "tsc --noEmit",
+    "migrate": "node --env-file=.env scripts/migrate.mjs",
+    "test:local": "node --env-file=.env scripts/test-local.mjs",
+    "test": "vitest run",
+    "dev": "tsup src/index.ts --format esm --dts --watch"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@react-email/components": "^1.0.0",
+    "@react-email/render": "^2.0.0",
+    "nodemailer": "^10.3.1",
+    "pg": "^8.16.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/nodemailer": "^6.4.0",
+    "@types/pg": "^8.15.0",
+    "@types/react": "^19.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  },
+  "keywords": ["monitoring", "error-reporting", "logging", "nextjs", "postgresql"]
+}

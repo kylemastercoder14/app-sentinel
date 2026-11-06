@@ -79,5 +79,3 @@ Never commit this file or publish these values to npm.
 2. Start the Next.js example and call `GET /api/test-sentinel` in development.
 3. Open Mailpit, confirm the email and redacted `authorization` field.
 4. Trigger the same error again inside 30 minutes; confirm it is saved but does not email again.
-
-# app-sentinel

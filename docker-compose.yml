@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: app_sentinel
+      POSTGRES_USER: app_sentinel
+      POSTGRES_PASSWORD: local-password
+    ports:
+      - "5433:5432"
+    volumes:
+      - app-sentinel-postgres:/var/lib/postgresql/data
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+volumes:
+  app-sentinel-postgres:
